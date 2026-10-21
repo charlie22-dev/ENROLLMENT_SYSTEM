@@ -1,59 +1,189 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+   # Laravel Enrollment System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A web-based school enrollment system built in **Laravel 12**, **MySQL**, and **Laravel Breeze (Blade stack)** with **Tailwind CSS** that accurately mirrors the real-world manual enrollment process:
 
-## About Laravel
+`Draft` → `Pending Advising` → `Pending Admission` → `Pending Registrar` → `Pending Cashier` → `Officially Enrolled`
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Side states: `Returned` (with mandatory remarks, restarting at advising upon resubmission), `Rejected` (permanent rejection), and `Cancelled`.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🔑 Demo Accounts
 
-## Learning Laravel
+All demo accounts use password: **`password`**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+| Role | Email | Password | What You Can Do / Purpose |
+|---|---|---|---|
+| **Student** | `student@school.edu` | `password` | Primary student (Juan dela Cruz, BSIT Yr 1). Has past grades (failed IT201, INC IT203, dropped IT205). Can browse board, pick sections, submit PEF, view remarks, download COR. |
+| **Student 2** | `student2@school.edu` | `password` | Clean-record student (Maria Reyes, BSIT Yr 1). Passed all previous courses (IT101–IT104). |
+| **Adviser** | `adviser@school.edu` | `password` | Prof. Maria Santos. Advising checkpoint. Views student academic grade history grouped by semester with failed/INC/dropped flagged in red/yellow/gray. Approves, returns with remarks, or rejects. |
+| **Admission** | `admission@school.edu` | `password` | Admission Officer. Verifies student credentials. Approves and forwards to Registrar, or returns with remarks. |
+| **Registrar** | `registrar@school.edu` | `password` | University Registrar. Validates PEF curriculum requirements. Approves and forwards to Cashier, or returns with remarks. |
+| **Cashier** | `cashier@school.edu` | `password` | Cashier Office. Views itemized assessment breakdown (tuition + misc fees), records manual payment with OR number, and issues official enrollment. |
+| **Admin** | `admin@school.edu` | `password` | Full CRUD for Departments, Programs, Subjects, Prerequisites, Curriculum mapping, Terms, Classrooms/Rooms, Instructors, Sections (with Schedules), and Users/Roles. |
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🚀 Setup & Installation Instructions
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 1. Requirements
+- PHP 8.2+
+- Composer
+- Node.js & NPM
+- MySQL / MariaDB (e.g. via XAMPP)
 
-### Premium Partners
+### 2. Database Configuration
+Ensure MySQL is running (default port 3306, user `root`, no password). Create database if needed:
+```sql
+CREATE DATABASE IF NOT EXISTS enrollment_system CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Check `.env` in `my_app/`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=enrollment_system
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Contributing
+### 3. Install Dependencies & Build Frontend
+```bash
+cd my_app
+composer install
+npm install
+npm run build
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Run Migrations & Seeders
+This seeds all departments, BSIT program, 12 subjects with prerequisites, rooms, faculty, offered sections with day/time schedules for the active term, and all demo users with realistic grade histories:
+```bash
+php artisan migrate:fresh --seed
+```
 
-## Code of Conduct
+### 5. Start Development Server
+```bash
+php artisan serve
+```
+Open **`http://localhost:8000`** in your browser.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 📋 The Real-World Enrollment Lifecycle
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. **Board / PEF Builder (`student@school.edu`)**:
+   - Student browses the offered schedule on the Board for the active term (`2024-2025 2nd Semester`).
+   - Picks sections. A live JavaScript unit counter tracks total units against allowed limits (`12` to `25` units).
+   - Submits PEF. `PefValidator` validates:
+     - Enrollment period is open
+     - Prerequisites passed (via `student_grades`)
+     - No schedule day/time conflicts
+     - Section capacity is available (`DB::transaction` with `lockForUpdate()`)
+     - Unit load min/max constraints
+   - Upon successful submission, seats are reserved in `sections.enrolled_count`, audit entry written to `pef_approvals`, and notification sent to the student's adviser.
 
-## License
+2. **Advising (`adviser@school.edu`)**:
+   - Reviews PEF in Advising queue.
+   - Inspects student's semester-by-semester academic history. Flagged subjects (failed IT201, INC IT203) are prominently highlighted.
+   - Can **Approve** (forwards to Admission), **Return with Remarks** (releases reserved seats, returns to student with remarks; resubmission restarts at Advising), or **Reject** (permanently releases seats).
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+3. **Admission Office (`admission@school.edu`)**:
+   - Reviews PEF in Admission queue.
+   - Validates student requirements. Approves (forwards to Registrar) or returns with remarks.
+
+4. **Registrar (`registrar@school.edu`)**:
+   - Reviews PEF in Registrar queue.
+   - Confirms official academic validity. Approves (forwards to Cashier) or returns with remarks.
+
+5. **Cashier (`cashier@school.edu`)**:
+   - Reviews PEF in Cashier queue.
+   - Views itemized assessment computed by `AssessmentService` (`total units × ₱450.00` + Library Fee, Lab Fee, Student Activity Fee, Registration Fee, Athletic Fee).
+   - Records manual payment amount and issues an Official Receipt (OR) Number.
+   - On submission, PEF status becomes **`enrolled`**.
+
+6. **Officially Enrolled & COR (`student@school.edu`)**:
+   - Student sees **Enrolled** status badge.
+   - Can view and print the Certificate of Registration (COR).
+   - Can download printable PDF Certificate of Registration generated via `barryvdh/laravel-dompdf`.
+
+---
+
+## 🧪 Automated Feature Test Suite
+
+Run PHPUnit tests:
+```bash
+php artisan test
+```
+
+All 35 tests pass:
+- **`PefValidatorTest`**:
+  - `fails_when_enrollment_period_closed`
+  - `fails_when_prerequisite_not_passed`
+  - `passes_when_prerequisite_is_passed`
+  - `fails_when_schedule_conflicts`
+  - `fails_when_section_is_full`
+- **`PefWorkflowTest`**:
+  - `student_can_submit_valid_pef`
+  - `adviser_can_approve_pef`
+  - `admission_and_registrar_can_advance_pef`
+  - `returning_pef_releases_seats_and_restarts_at_advising_on_resubmit`
+  - `wrong_role_cannot_act_on_pef`
+- Plus all authentication, profile, and authorization tests.
+
+---
+
+## 📁 Key File Map
+
+```
+my_app/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Admin/              # Department, Program, Subject, Prerequisite, Curriculum, Term, Room, Instructor, Section, User controllers
+│   │   │   ├── Student/            # Dashboard, Board, PEF (create, store, edit, show, submit, cancel, cor, corPdf)
+│   │   │   ├── Adviser/            # Queue, Review (with grade history), Approve, Return, Reject
+│   │   │   ├── Admission/          # Queue, Review, Approve, Return
+│   │   │   ├── Registrar/          # Queue, Review, Approve, Return
+│   │   │   └── Cashier/            # Queue, Review (assessment breakdown), StorePayment
+│   │   ├── Middleware/
+│   │   │   └── EnsureRole.php      # Role-based route guard
+│   │   └── Requests/
+│   │       ├── StorePefRequest.php
+│   │       ├── UpdatePefRequest.php
+│   │       ├── ApprovePefRequest.php
+│   │       ├── ReturnPefRequest.php
+│   │       └── RecordPaymentRequest.php
+│   ├── Models/                     # 18 Eloquent models with relationships, casts, and helper methods
+│   ├── Policies/
+│   │   └── PefPolicy.php           # Enforces stage authorization and student PEF isolation
+│   └── Services/
+│       ├── PefWorkflow.php         # Owns status transitions, seat reservations/releases, and pef_approvals audit trail
+│       ├── PefValidator.php        # Enrollment window, prereqs, schedule conflicts, unit limits, capacity lock
+│       ├── AcademicHistoryService.php # Semester grade grouping & deficiency flagging
+│       └── AssessmentService.php   # Computes tuition & itemized misc fees
+├── config/
+│   └── fees.php                    # Tuition per unit and miscellaneous fee schedule
+├── database/
+│   ├── migrations/                 # 22 database migrations
+│   ├── factories/                  # Model factories
+│   └── seeders/                    # 10 realistic demo seeders
+├── resources/views/                # Clean Blade views with Tailwind CSS and reusable components
+└── tests/Feature/                  # Workflow & Validator feature tests
+```
+
+---
+
+## 📌 Items Completed / Incomplete
+
+- [x] Phase 1: Laravel Breeze auth, role column on users, EnsureRole middleware, role-based dashboard redirects
+- [x] Phase 2: All 22 migrations, 18 models with relationships, 8 factories, 10 seeders with realistic demo data
+- [x] Phase 3: Full Admin CRUD for departments, programs, subjects, prerequisites, curriculum, terms, rooms, instructors, sections with schedules, users
+- [x] Phase 4: Course Board, Student PEF builder with live unit counter, PefValidator service with lockForUpdate capacity reservation
+- [x] Phase 5: PefWorkflow service, adviser review queue with historical grades & deficiencies, admission queue, registrar queue, PefPolicy authorization
+- [x] Phase 6: AssessmentService, Cashier payment queue & OR number recording, COR view, DomPDF COR generation
+- [x] Phase 7: Database notifications, full feature test suite (35 of 35 tests passing)
+- [x] Phase 8: Complete README documentation and seeded demo accounts
+- **Remaining / Optional Future Extensions**:
+  - Email notification transport (currently uses Laravel's robust database notifications driver; can configure SMTP in `.env` if desired)
+  - Student photo upload / avatar
